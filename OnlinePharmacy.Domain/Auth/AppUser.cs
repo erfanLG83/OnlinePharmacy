@@ -14,6 +14,8 @@ namespace OnlinePharmacy.Domain.Auth
         #region Navigation Properties
         public List<FavoriteProduct> FavoriteProducts { get; set; }
         public List<AppUserRole> UserRoles { get; set; }
+        public List<ShoppingCart> ShoppingCarts { get; set; }
+        public List<Order> Orders { get; set; }
         //public List<ProductCard> ProductCards { get; set; }
         //public List<Order> Orders { get; set; }
         #endregion

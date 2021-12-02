@@ -275,6 +275,9 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Property<bool>("DefaultAddress")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -323,6 +326,34 @@ namespace OnlinePharmacy.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.FavoriteProduct", b =>
@@ -385,6 +416,39 @@ namespace OnlinePharmacy.Data.Migrations
                     b.ToTable("MainCategories");
                 });
 
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.Order", b =>
+                {
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentAuthority")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("SuccessfulPayment")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("TotalPrice")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("UserAdressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ShoppingCartId");
+
+                    b.HasIndex("UserAdressId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -405,13 +469,16 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CompoundsAsJson")
+                    b.Property<string>("CompoundsList")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ConsumptionInstruction")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("DiscountPercent")
                         .HasColumnType("int");
@@ -433,6 +500,9 @@ namespace OnlinePharmacy.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("MainCategoryId")
                         .HasColumnType("int");
 
@@ -449,11 +519,11 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("PropertiesListAsJson")
+                    b.Property<string>("PropertiesList")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RecommendationsAndWarningsAsJson")
+                    b.Property<string>("RecommendationsAndWarningsList")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -501,6 +571,29 @@ namespace OnlinePharmacy.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages");
+                });
+
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Finished")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.SubCategory", b =>
@@ -623,6 +716,25 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.CartItem", b =>
+                {
+                    b.HasOne("OnlinePharmacy.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlinePharmacy.Domain.Entities.ShoppingCart", "ShoppingCart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShoppingCart");
+                });
+
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.FavoriteProduct", b =>
                 {
                     b.HasOne("OnlinePharmacy.Domain.Entities.Product", "Product")
@@ -638,6 +750,31 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("OnlinePharmacy.Domain.Entities.ShoppingCart", "ShoppingCart")
+                        .WithOne("Order")
+                        .HasForeignKey("OnlinePharmacy.Domain.Entities.Order", "ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlinePharmacy.Domain.Auth.UserAddress", "UserAddress")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserAdressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlinePharmacy.Domain.Auth.AppUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("ShoppingCart");
+
+                    b.Navigation("User");
+
+                    b.Navigation("UserAddress");
                 });
 
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.Product", b =>
@@ -676,6 +813,15 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.ShoppingCart", b =>
+                {
+                    b.HasOne("OnlinePharmacy.Domain.Auth.AppUser", "User")
+                        .WithMany("ShoppingCarts")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.SubCategory", b =>
                 {
                     b.HasOne("OnlinePharmacy.Domain.Entities.MainCategory", "MainCategory")
@@ -702,7 +848,16 @@ namespace OnlinePharmacy.Data.Migrations
                 {
                     b.Navigation("FavoriteProducts");
 
+                    b.Navigation("Orders");
+
+                    b.Navigation("ShoppingCarts");
+
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("OnlinePharmacy.Domain.Auth.UserAddress", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.Brand", b =>
@@ -722,6 +877,13 @@ namespace OnlinePharmacy.Data.Migrations
                     b.Navigation("FavoriteProducts");
 
                     b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("OnlinePharmacy.Domain.Entities.ShoppingCart", b =>
+                {
+                    b.Navigation("CartItems");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("OnlinePharmacy.Domain.Entities.SubCategory", b =>

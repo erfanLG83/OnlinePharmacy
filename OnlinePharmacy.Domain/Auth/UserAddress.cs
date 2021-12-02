@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlinePharmacy.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,10 @@ namespace OnlinePharmacy.Domain.Auth
         public string PostalCode { get; set; }
         public string ProvinceName { get; set; }
         public bool DefaultAddress { get; set; }
+        public bool IsDeleted { get; set; }
 
         public string UserId { get; set; }
+        public List<Order> Orders { get; set; }
         public AppUser AppUser { get; set; }
     }
 }

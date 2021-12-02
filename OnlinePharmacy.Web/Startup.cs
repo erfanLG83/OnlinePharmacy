@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using OnlinePharmacy.Data;
+using OnlinePharmacy.Data.UnitOfWork;
+using OnlinePharmacy.Services.Contract;
+using OnlinePharmacy.Services.Implementation;
 
 namespace OnlinePharmacy.Web
 {
@@ -23,6 +22,14 @@ namespace OnlinePharmacy.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<OnlinePharmacyDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IFileWorker, FileWorker>(provider =>
+            {
+                var env = provider.GetRequiredService<IWebHostEnvironment>();
+                return new FileWorker(env.ContentRootPath+"/wwwroot");
+            });
+            services.AddMvc();
             services.AddRazorPages();
         }
 
@@ -45,11 +52,23 @@ namespace OnlinePharmacy.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapAreaControllerRoute(
+                    name:"adminArea",
+                    areaName:"admin",
+                    "admin/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Dashboard", action = "Index" }
+                    );
                 endpoints.MapRazorPages();
+                endpoints.MapControllerRoute(
+                    name: "defualt",
+                    pattern: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" }
+                    );
             });
         }
     }

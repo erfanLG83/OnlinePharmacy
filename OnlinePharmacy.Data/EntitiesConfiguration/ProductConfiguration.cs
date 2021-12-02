@@ -19,7 +19,7 @@ namespace OnlinePharmacy.Data.EntitiesConfiguration
             builder.Property(x => x.Barcode)
                 .HasMaxLength(100)
                 .IsRequired();
-            builder.Property(x => x.CompoundsAsJson)
+            builder.Property(x => x.CompoundsList)
                 .HasMaxLength(500)
                 .IsRequired(false);
             builder.Property(x => x.ConsumptionInstruction)
@@ -45,9 +45,9 @@ namespace OnlinePharmacy.Data.EntitiesConfiguration
                 .IsRequired();
             builder.Property(x => x.Price)
                 .IsRequired();
-            builder.Property(x => x.PropertiesListAsJson)
+            builder.Property(x => x.PropertiesList)
                 .IsRequired();
-            builder.Property(x => x.RecommendationsAndWarningsAsJson)
+            builder.Property(x => x.RecommendationsAndWarningsList)
                 .HasMaxLength(500)
                 .IsRequired(false);
             builder.Property(x => x.StoreCode)

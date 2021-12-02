@@ -1,0 +1,205 @@
+﻿@model CreateProductDto
+@{
+    TempData["title"] = "افزودن محصول";
+    TempData["page-title"] = "محصول ها - افزودن محصول ";
+}
+<div class="x_content row">
+    <form enctype="multipart/form-data" action="/admin/products/create" method="post">
+        <div class="col-md-12" asp-validation-summary="All"></div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Name">نام</label>
+            <input asp-for="Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="Name"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="EnglishName">نام به انگلیسی</label>
+            <input asp-for="EnglishName" class="form-control" />
+            <span class="text-danger" asp-validation-for="EnglishName"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Info1">ویژگی 1</label>
+            <input asp-for="Info1" class="form-control" />
+            <span class="text-danger" asp-validation-for="Info1"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Info2">ویژگی 2</label>
+            <input asp-for="Info2" class="form-control" />
+            <span class="text-danger" asp-validation-for="Info2"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="UrlAddress">آدرس URL</label>
+            <input asp-for="UrlAddress" class="form-control" />
+            <span class="text-danger" asp-validation-for="UrlAddress"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Model">مدل</label>
+            <input asp-for="Model" class="form-control" />
+            <span class="text-danger" asp-validation-for="Model"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Barcode">بارکد</label>
+            <input asp-for="Barcode" class="form-control" />
+            <span class="text-danger" asp-validation-for="Barcode"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="StoreCode">کد انبار</label>
+            <input asp-for="StoreCode" class="form-control" />
+            <span class="text-danger" asp-validation-for="StoreCode"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Price">قیمت(تومان)</label>
+            <input asp-for="Price" type="number" class="form-control" />
+            <span class="text-danger" asp-validation-for="Price"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="DiscountPercent">درصد تخفیف</label>
+            <input asp-for="DiscountPercent" type="number" class="form-control" />
+            <span class="text-danger" asp-validation-for="DiscountPercent"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="BrandId">برند</label>
+            <select class="form-control" asp-for="BrandId" asp-items="@ViewBag.Brands">
+                <option></option>
+            </select>
+            <span class="text-danger" asp-validation-for="BrandId"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="MainCategoryId">دسته بندی اصلی</label>
+            <select class="form-control" id="mainCategoriesSelect" asp-for="MainCategoryId">
+                <option value=""></option>
+                @foreach (var item in ViewBag.MainCategories as List<SelectListCategoryDto>)
+                {
+                    <option value="@item.Id">@item.Display</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="MainCategoryId"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="SubCategoryId">زیردسته</label>
+            <select class="form-control" disabled asp-for="SubCategoryId" id="subCategorySelect">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="Description">توضیح محصول</label>
+            <textarea asp-for="Description" id="descSummernote">
+            </textarea>
+            <span class="text-danger" asp-validation-for="Description"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="ConsumptionInstruction">نحوه استفاده</label>
+            <textarea asp-for="ConsumptionInstruction" class="form-control">
+            </textarea>
+            <span class="text-danger" asp-validation-for="ConsumptionInstruction"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="HowMaintain">نحوه نگهداری</label>
+            <textarea asp-for="HowMaintain" class="form-control">
+            </textarea>
+            <span class="text-danger" asp-validation-for="HowMaintain"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12">ویژگی ها</label>
+            <div class="long-text col-xs-12">
+                <input asp-for="PropertiesList" id="propertiesInput" type="text" class="tags form-control" />
+                <div id="suggestions-container"
+                     style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12">توصیه ها و هشدارها</label>
+            <div class="long-text col-xs-12">
+                <input asp-for="RecommendationsAndWarningsList" id="warningsInput" type="text" class="tags form-control" />
+                <div id="suggestions-container"
+                     style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+            </div>
+        </div>
+        <div class="alert alert-info col-xs-12">
+            <p>ترکیبات را به اینصورت وارد کنید </p>
+            <p>نام : مقدار   --- مانند --> نشاسته : 250گرم</p>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12">ترکیبات</label>
+            <div class="col-xs-12">
+                <input asp-for="CompoundsList" id="compoundsInput" type="text" class="tags form-control" />
+                <span class="text-danger" id="compoundsErrorSpan"></span>
+                <div id="suggestions-container"
+                     style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+            </div>
+        </div>
+        <div class="col-md-12 form-group">
+            <label asp-for="Available">موجود ؟</label>
+            <input type="checkbox" class="checkbox-inline" asp-for="Available"/>
+        </div>
+        <div class="col-md-12" style="margin-top:10px">
+            <a class="btn btn-warning" href="/admin/products">
+                انصراف
+            </a>
+            <button class="btn btn-success" type="submit">
+                ثبت
+            </button>
+        </div>
+    </form>
+</div>
+@section head{ 
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+}
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+<script>
+    $("#descSummernote").summernote();
+    $("#propertiesInput").tagsInput({
+        'defaultText': 'ویژگی ها را وارد کنید...',
+        'delimiter': [';']
+    });
+    $("#warningsInput").tagsInput({
+        'defaultText': 'هشدار ها را وارد کنید...',
+        'delimiter': [';']
+    }); 
+    $("#compoundsInput").tagsInput({
+        'width': "100%",
+        'defaultText': 'ترکیبات را وارد کنید...',
+        'onAddTag': function (e) {
+            if (e.indexOf(":") == -1) {
+                $("#compoundsErrorSpan").html(`فرمت ورودی درست نیست . متن ورودی باید دارای : برای جداسازی مقدار از نام باشد.`);
+                $("#compoundsInput").removeTag(e);
+                return;
+            }
+            $("#compoundsErrorSpan").html("");
+        },
+        'delimiter': [';']
+    });
+</script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        const loadSubCategories = (e) => {
+            const value = e.target.value;
+            if (value) {
+                fetch("/admin/subcategories/loadsubcategories/" + value)
+                    .then(r => r.json())
+                    .then(d => {
+                        let options = "<option value=''></option>";
+                        d.forEach(x => {
+                            options += `<option value='${x.id}'>${x.display}</option>`;
+                        });
+                        $("#subCategorySelect").html(options);
+                        $("#subCategorySelect").removeAttr("disabled");
+
+                    })
+                    .catch(err => console.log(err));
+                return;
+            }
+            $("#subCategorySelect").html("<option value=''></option>");
+            $("#subCategorySelect").attr("disabled");
+        }
+        $("#mainCategoriesSelect").change(loadSubCategories);
+    </script>
+
+    @if (Model?.MainCategoryId is not null)
+    {
+        <script>
+            $("#mainCategoriesSelect").load(loadSubCategories);
+        </script>
+    }
+}

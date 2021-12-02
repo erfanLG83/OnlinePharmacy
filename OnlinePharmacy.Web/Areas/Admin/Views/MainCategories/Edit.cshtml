@@ -1,0 +1,48 @@
+﻿@model EditMainCategoryDto
+@{
+    TempData["title"] = "ویرایش دسته بندی";
+    TempData["page-title"] = "دسته بندی ها - ویرایش دسته بندی ";
+}
+<div class="x_content row">
+    <form enctype="multipart/form-data" action="/admin/maincategories/edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="col-md-12 text-danger" asp-validation-summary="All"></div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Name">نام</label>
+            <input asp-for="Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="Name"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="EnglishName">نام به انگلیسی</label>
+            <input asp-for="EnglishName" class="form-control" />
+            <span class="text-danger" asp-validation-for="EnglishName"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="IntroducationText">متن معرفی</label>
+            <textarea asp-for="IntroducationText" class="form-control">
+            </textarea>
+            <span class="text-danger" asp-validation-for="IntroducationText"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="IntroducationImage">تصویر پیوسته به متن معرفی</label>
+            <input asp-for="IntroducationImage" type="file" class="form-control" />
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="Image">تصویر</label>
+            <input asp-for="Image" type="file" class="form-control" />
+        </div>
+        <div class="col-md-12">
+
+            <a class="btn btn-warning" href="/admin/maincategories">
+                انصراف
+            </a>
+            <button class="btn btn-success" type="submit">
+                ثبت
+            </button>
+        </div>
+    </form>
+</div>
+@section scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,59 @@
+﻿@model DetailsSubCategory
+@{
+    TempData["title"] = "زیردسته ها";
+    TempData["page-title"] = $"زیردسته ها - جزئیات دسته بندی {Model.Name}";
+}
+<div class="x_content">
+    <div class="row" style="background-color: #E3FDFD;padding:15px">
+        <div class="col-md-9 col-sm-8 col-xs-12 row">
+            <div class="col-md-7 col-sm-6 col-xs-12">
+                <h3 class="text-center">
+                    @Model.Name <br /> @Model.EngName
+                </h3>
+                <hr />
+            </div>
+            <div class="col-md-5 col-sm-6 col-xs-12">
+                @if (Model.ImageName is null)
+                {
+                    <img src="/images/no-image.png" class="img-responsive" />
+                }
+                else
+                {
+                    <img src="/images/categories/@Model.ImageName" class="img-responsive center-block" />
+                }
+            </div>
+            <div class="clearfix"></div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3>معرفی دسته بندی</h3>
+                </div>
+                <div class="panel-body">
+                    <img src="/images/categories/@Model.IntroducationImageName" class="img-responsive center-block" />
+                    <br />
+                    <p>@Model.IntroducationText</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-12">
+            <h4>دسته بندی اصلی</h4>
+            <h5 class="text-left">@Model.MainCategoryName</h5>
+            <br />
+            <br />
+            @if (Model.ParentName is not null)
+            {
+                <h4>دسته بندی پدر</h4>
+                <h5 class="text-left">@Model.ParentName</h5>
+            }
+            else {
+            <h4>زیر دسته ها</h4>
+            <br />
+            <br />
+
+            @foreach (var item in Model.ChildCategories)
+            {
+                <a class="btn btn-block btn-dark btn-round btn-link" href="/admin/subcategories/details/@item.Id">@item.Name</a>
+            }
+            }
+        </div>
+    </div>
+</div>

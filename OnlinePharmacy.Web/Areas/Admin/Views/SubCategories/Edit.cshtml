@@ -1,0 +1,115 @@
+﻿@model EditSubCategoryDto
+@{
+    TempData["title"] = "ویرایش زیردسته";
+    TempData["page-title"] = "زیردسته ها - ویرایش زیردسته ";
+}
+<div class="x_content row">
+    <form enctype="multipart/form-data" action="/admin/subcategories/edit" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="col-md-12" asp-validation-summary="All"></div>
+        <div class="col-md-6 form-group">
+            <label asp-for="Name">نام</label>
+            <input asp-for="Name" class="form-control" />
+            <span class="text-danger" asp-validation-for="Name"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="EnglishName">نام به انگلیسی</label>
+            <input asp-for="EnglishName" class="form-control" />
+            <span class="text-danger" asp-validation-for="EnglishName"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="MainCategoryId">دسته بندی اصلی</label>
+            <select class="form-control" id="mainCategoriesSelect" asp-for="MainCategoryId">
+                <option value=""></option>
+                @foreach (var item in ViewBag.MainCategories)
+                {
+                    <option value="@item.Id">@item.Display</option>
+
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="MainCategoryId"></span>
+        </div>
+        <div class="col-md-6 form-group">
+            <label asp-for="ParentId">زیردسته پدر</label>
+            <select class="form-control" disabled asp-for="ParentId" id="parentSelect">
+                <option value=""></option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="IntroducationText">متن معرفی</label>
+            <textarea asp-for="IntroducationText" class="form-control">
+            </textarea>
+            <span class="text-danger" asp-validation-for="IntroducationText"></span>
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="IntroducationImage">تصویر پیوسته به متن معرفی</label>
+            <input asp-for="IntroducationImage" type="file" class="form-control" />
+        </div>
+        <div class="form-group col-md-12">
+            <label asp-for="Image">تصویر</label>
+            <input asp-for="Image" type="file" class="form-control" />
+        </div>
+        @if (ViewBag.Children != null)
+        {
+            <div class="col-xs-12 alert alert-warning">
+                <p>توجه کنید !! با تغییر گروه این دسته تمامی , گروه های دسته های زیرمجموعه نیز تغییر میکنند.</p>
+                <p>درصورت افزودن دسته ی پدر برای این دسته , دسته های زیرمجموعه این دسته بندی فاقد دسته پدر میشوند.</p>
+                <h3>دسته های زیرمجوعه</h3>
+                <p>
+                    @foreach (var item in ViewBag.Children as IEnumerable<string>)
+                    {
+                        <span class="badge badge-info">@item</span>
+                    }
+                </p>
+            </div>
+        }
+        <div class="col-md-12">
+
+            <a class="btn btn-warning" href="/admin/maincateogires">
+                انصراف
+            </a>
+            <button class="btn btn-success" type="submit">
+                ثبت
+            </button>
+        </div>
+    </form>
+</div>
+@section scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+            const loadSubCategories = (e) => {
+                const value = e.target.value;
+                if (value) {
+                    fetch(`/admin/subcategories/loadsubcategories/${value}?selfId=@(Model.Id)`)
+                        .then(r => r.json())
+                        .then(d => {
+                            let options = "<option value=''></option>";
+                            d.forEach(x => {
+                                options += `<option value='${x.id}'>${x.display}</option>`;
+                            });
+                            $("#parentSelect").html(options);
+                            $("#parentSelect").removeAttr("disabled");
+
+                        })
+                        .catch(err => console.log(err));
+                    return;
+                }
+                $("#parentSelect").html("<option value=''></option>");
+                $("#parentSelect").attr("disabled");
+            }
+            $("#mainCategoriesSelect").change(loadSubCategories);
+        </script>
+
+        @if (Model?.MainCategoryId is not null)
+        {
+            <script>
+                loadSubCategories({
+                    target: {
+                        value:@Model.MainCategoryId
+                    }
+                });
+                $("#parentSelect").removeAttr("disabled");
+            </script>
+        }
+}

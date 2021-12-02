@@ -17,6 +17,9 @@ namespace OnlinePharmacy.Data
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<Brand> Brands { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             #region Properties Configuration
@@ -26,6 +29,11 @@ namespace OnlinePharmacy.Data
             builder.ApplyConfiguration(new SubCategoryConfiguration());
             builder.ApplyConfiguration(new UserAddressConfiguration());
             builder.ApplyConfiguration(new ProductConfiguration());
+
+            builder.Entity<Order>().HasKey(x => x.ShoppingCartId);
+            builder.Entity<Order>().Property(x => x.PaymentAuthority)
+                .HasMaxLength(100)
+                .IsRequired(false);
             builder.Entity<ProductImage>()
                 .Property(x => x.ImageName)
                 .HasMaxLength(500)
@@ -38,6 +46,11 @@ namespace OnlinePharmacy.Data
                 .Property(x => x.LastName)
                 .HasMaxLength(100)
                 .IsRequired();
+            builder.Entity<AppUserRole>()
+                .HasKey(n => new { 
+                    n.RoleId,
+                    n.UserId
+                });
             #endregion
 
             #region Realations Configuration
@@ -81,6 +94,26 @@ namespace OnlinePharmacy.Data
                 .HasOne(x => x.User)
                 .WithMany(x => x.UserRoles)
                 .HasForeignKey(x => x.UserId);
+            builder.Entity<ShoppingCart>()
+                .HasMany(x => x.CartItems)
+                .WithOne(x => x.ShoppingCart)
+                .HasForeignKey(x => x.ShoppingCartId);
+            builder.Entity<ShoppingCart>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.ShoppingCarts)
+                .HasForeignKey(x => x.UserId);
+            builder.Entity<ShoppingCart>()
+                .HasOne(x => x.Order)
+                .WithOne(x => x.ShoppingCart)
+                .HasForeignKey<Order>(x=>x.ShoppingCartId);
+            builder.Entity<Order>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.Orders)
+                .HasForeignKey(x => x.UserId);
+            builder.Entity<Order>()
+                .HasOne(x => x.UserAddress)
+                .WithMany(x=>x.Orders)
+                .HasForeignKey(x=>x.UserAdressId);
             #endregion
 
             base.OnModelCreating(builder);

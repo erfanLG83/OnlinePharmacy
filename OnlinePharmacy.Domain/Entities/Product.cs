@@ -16,23 +16,24 @@ namespace OnlinePharmacy.Domain.Entities
         public string Model { get; set; }
         public string Barcode { get; set; }
         public string StoreCode { get; set; }
+        public string Description { get; set; }
         public bool Available { get; set; }
         // نحوه استفاده
         public string ConsumptionInstruction { get; set; }
         // نحوه نگهداری
         public string HowMaintain { get; set; }
-        // توصیه ها و هشدارها در قالب جیسان
-        public string RecommendationsAndWarningsAsJson { get; set; }
-        // ویژگی ها در قالب جیسان
-        public string PropertiesListAsJson { get; set; }
-        // ترکیبات در قالب جیسان
-        /*  [{
-                "amount":"250","name":"شیشه"
-            }] */
-        public string CompoundsAsJson { get; set; }
+        // توصیه ها و هشدارها , جدا شده با ;
+        public string RecommendationsAndWarningsList { get; set; }
+        // ویژگی ها , جدا شده با ;
+        public string PropertiesList { get; set; }
+        // ترکیبات در قالب 
+        // نام : مقدار
+        //جدا شده با ;
+        public string CompoundsList{ get; set; }
         public long Price { get; set; }
         // درصد تخفیف
         public int? DiscountPercent { get; set; }
+        public bool IsDeleted { get; set; }
 
         public int BrandId { get; set; }
         public Brand Brand { get; set; }
