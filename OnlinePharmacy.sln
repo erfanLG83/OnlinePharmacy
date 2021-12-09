@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlinePharmacy.Web", "OnlinePharmacy.Web\OnlinePharmacy.Web.csproj", "{4CB7B2F6-D009-411E-AF3D-D1B72FD32FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlinePharmacy.Data", "OnlinePharmacy.Data\OnlinePharmacy.Data.csproj", "{1F0D95D4-E937-4455-8C06-E751FFDFEA82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlinePharmacy.Data", "OnlinePharmacy.Data\OnlinePharmacy.Data.csproj", "{1F0D95D4-E937-4455-8C06-E751FFDFEA82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlinePharmacy.Domain", "OnlinePharmacy.Domain\OnlinePharmacy.Domain.csproj", "{8CF87E78-2645-43D8-84B6-DA899C15433E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlinePharmacy.Domain", "OnlinePharmacy.Domain\OnlinePharmacy.Domain.csproj", "{8CF87E78-2645-43D8-84B6-DA899C15433E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlinePharmacy.Services", "OnlinePharmacy.Services\OnlinePharmacy.Services.csproj", "{1D562AD9-9C01-4426-85F2-19F4D9B84C21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlinePharmacy.Services", "OnlinePharmacy.Services\OnlinePharmacy.Services.csproj", "{1D562AD9-9C01-4426-85F2-19F4D9B84C21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
